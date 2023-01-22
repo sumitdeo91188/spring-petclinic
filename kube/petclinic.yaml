@@ -1,0 +1,54 @@
+# ... Deployment YAML definition
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: petclinic
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: petclinic
+  minReadySeconds: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 0
+      maxSurge: 1
+  template:
+    metadata:
+      labels:
+        app: petclinic
+    spec:
+      containers:
+        - name: petclinic
+          image: deosu/spring-petclinic:dd-kubernetes-v0
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MYSQL_URL
+              value: jdbc:mysql://mysql/petclinic
+          imagePullPolicy: Always
+
+---
+# ... Service YAML definition
+apiVersion: v1
+kind: Service
+metadata:
+  name: petclinic
+spec:
+  selector:
+    app: petclinic
+  ports:
+    - port: 80
+      targetPort: 8080
+  type: LoadBalancer
+
+#spec:
+#  selector:
+#    app: petclinic
+#  ports:
+#    - port: 80
+#      targetPort: 8080
+#      nodePort: 31111
+#      protocol: TCP
+#  type: NodePort

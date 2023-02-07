@@ -4,11 +4,11 @@ kind: Deployment
 metadata:
   name: petclinic
 spec:
-  replicas: 5
+  replicas: 3
   selector:
     matchLabels:
       app: petclinic
-  minReadySeconds: 5
+  minReadySeconds: 120
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -21,7 +21,7 @@ spec:
     spec:
       containers:
         - name: petclinic
-          image: deosu/spring-petclinic:dd-kubernetes-v0
+          image: deosu/spring-petclinic:mysql
           ports:
             - containerPort: 8080
           env:
